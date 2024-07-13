@@ -3,8 +3,8 @@ package com.example.secdev.service;
 
 import com.example.secdev.config.CurrentUser;
 import com.example.secdev.config.PasswordBlacklist;
+import com.example.secdev.model.Role;
 import com.example.secdev.model.User;
-import com.example.secdev.model.UserDetailsImpl;
 import com.example.secdev.repo.UserRepo;
 import com.example.secdev.utils.dtos.PasswordDTO;
 import com.example.secdev.utils.dtos.StatusDTO;
@@ -12,12 +12,17 @@ import com.example.secdev.utils.dtos.UserDTO;
 import com.example.secdev.utils.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -40,7 +45,7 @@ public class UserService implements UserDetailsService{
     }
 
     public StatusDTO changePass(PasswordDTO passDto) {
-        User currUser = currentUser.getCurrentUser().getUserEntity();
+        User currUser = currentUser.getCurrentUser();
 
         throwIfPasswordsMatch(passDto.getNew_password(), currUser.getPassword());
         throwIfPasswordInBlackList(passDto.getNew_password());
@@ -73,8 +78,14 @@ public class UserService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepo.findByEmailIgnoreCase(s)
-                .map(UserDetailsImpl::new)
+        User user = userRepo.findByEmailIgnoreCase(s)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getAuthorities()
+        );
     }
 }

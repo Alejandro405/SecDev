@@ -60,9 +60,7 @@ public class PayRollService {
     }
 
     public EmployeeDTO getCurrentEmployeeDataByPeriod(YearMonth period) {
-        User currUser = currentUser
-                .getCurrentUser()
-                .getUserEntity();
+        User currUser = currentUser.getCurrentUser();
 
         PayRoll payment = payRollRepo
                 .findByEmployeeIgnoreCaseAndPeriod(currUser.getEmail(), period)
@@ -79,8 +77,7 @@ public class PayRollService {
 
     public List<EmployeeDTO> getAllCurrentEmployeeData() {
         User currUser = currentUser
-                .getCurrentUser()
-                .getUserEntity();
+                .getCurrentUser();
 
         List<PayRoll> payments = payRollRepo.findAllByEmployeeIgnoreCaseOrderByPeriodDesc(currUser.getEmail());
 

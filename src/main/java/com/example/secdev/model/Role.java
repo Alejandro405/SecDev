@@ -26,9 +26,6 @@ public class Role {
 
     private String description;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> authorities;
-
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 }
