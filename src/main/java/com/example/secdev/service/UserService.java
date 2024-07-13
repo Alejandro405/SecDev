@@ -6,6 +6,7 @@ import com.example.secdev.config.PasswordBlacklist;
 import com.example.secdev.model.Role;
 import com.example.secdev.model.User;
 import com.example.secdev.repo.UserRepo;
+import com.example.secdev.utils.UpdateUserInformation;
 import com.example.secdev.utils.dtos.PasswordDTO;
 import com.example.secdev.utils.dtos.StatusDTO;
 import com.example.secdev.utils.dtos.UserDTO;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,5 +89,21 @@ public class UserService implements UserDetailsService{
                 user.getPassword(),
                 user.getAuthorities()
         );
+    }
+
+    public UserDTO grantRole(UpdateUserInformation userInformation) {
+        return null;
+    }
+
+    public UserDTO removeRole(UpdateUserInformation userInformation) {
+        return null;
+    }
+
+    public void deleteUser(String email) {
+
+    }
+
+    public List<UserDTO> getUsers() {
+        return null;
     }
 }

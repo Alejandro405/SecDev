@@ -15,4 +15,10 @@ public class ErrorResponse {
     private String error;
     private String message;
     private String path;
+
+    public ErrorResponse(String s) {
+        this.message = s;
+        this.status = 400;
+        this.timestamp = System.currentTimeMillis() + "";
+    }
 }
