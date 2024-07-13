@@ -12,11 +12,10 @@ Based on the ASVS V4.Access Control Requirements, the following requirements are
 
 The roles should be divided into 2 groups: administrative (Administrator) and business users (Accountant, User). a user can be either from the administrative or business group. A user with an administrative role should not have access to business functions and vice versa.
 
-# Figuring out how Roles and Permissions work in Spring Security
-
----
 
 ## Core Concepts
+
+---
 
 + **Authority**: A permission or right to perform an action, usually granted to a role. In Spring Security, authorities are granted to users who have been authenticated, and can be accessed by `UserDetailsService`.
     1. READ_AUTHORITY
@@ -28,10 +27,32 @@ The roles should be divided into 2 groups: administrative (Administrator) and bu
 
 Spring security use the hasRole() and hasAuthority() interchangeably. With Spring security 4, it is more consistent and we should also be consistent with our approach while using the hasRole() and hasAuthority() method. Let’s keep in mind the following simple rules.
 
-1. Always add the ROLE_ while using the hasAuthority() method (e.g hasAuthority("ROLE_CUSTOMER")).
-2. While using hasRole(), do not add the ROLE_ prefix as it will be added automatically by Spring security (hasRole("CUSTOMER")).
+* Always add the ROLE_ while using the hasAuthority() method (e.g hasAuthority("ROLE_CUSTOMER")). 
+* While using hasRole(), do not add the ROLE_ prefix as it will be added automatically by Spring security (hasRole("CUSTOMER")).
 
-## How is this usually get done?
+Another important thing to take in mind is that, Spring Security, provides interceptors tah controll access to secure objects (methods or endpoints). The decision of letting the request pass, relies on `AuthorizationManager` instances. The simplest ones are these:
+
+1.  `AuthorizationManager`
+      - Función: Reemplaza a AccessDecisionManager y AccessDecisionVoter para unificar la lógica de autorización.
+      - Propósito: Reemplaza a AccessDecisionManager y AccessDecisionVoter para unificar la lógica de autorización.
+      - Elemento clave: Dos métodos principales check y verify para comprobar y verificar las decisiones de autorización. 
+
+2. `AuthorityAuthorizationManager`
+   - Función: Verifica si la autenticación actual contiene una autoridad específica.
+   - Propósito: Permitir o denegar el acceso basado en la presencia de autoridades predefinidas.
+   - Elemento clave: Lista de autoridades configuradas que se comparan con las del usuario autenticado.
+
+3. `AuthenticatedAuthorizationManager`
+   - Función: Diferencia entre usuarios anónimos, totalmente autenticados y autenticados mediante "remember-me".
+   - Propósito: Controlar el acceso basado en el nivel de autenticación del usuario.
+   - Elemento clave: Tipo de autenticación (anónima, completa, remember-me).
+
+
+
+
+## How is this usually done?
+
+---
 
 There are multiple way to design the spring security roles and permissions but one of the most common and flexible way is to build and roles and privileges module around user groups.
 
