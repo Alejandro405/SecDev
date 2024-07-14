@@ -1,6 +1,7 @@
 package com.example.secdev.utils.dtos;
 
 
+import com.example.secdev.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +34,6 @@ public class UserDTO {
     @Size(min = 12, max = 50)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    private Set<RoleDTO> roles;
 }

@@ -2,10 +2,8 @@ package com.example.secdev.controller;
 
 
 import com.example.secdev.service.UserService;
-import com.example.secdev.utils.ErrorResponse;
 import com.example.secdev.utils.UpdateUserInformation;
 import com.example.secdev.utils.dtos.UserDTO;
-import com.example.secdev.utils.exceptions.AdminOperationNotSupported;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,9 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -36,7 +32,7 @@ public class AdminController {
                 res = userService.grantRole(userInformation);
                 break;
             case "REMOVE":
-                res = userService.removeRole(userInformation);
+                res = userService.revokeRole(userInformation);
                 break;
             default:
                 return ResponseEntity.badRequest().build();

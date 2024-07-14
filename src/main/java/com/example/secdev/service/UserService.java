@@ -5,16 +5,16 @@ import com.example.secdev.config.CurrentUser;
 import com.example.secdev.config.PasswordBlacklist;
 import com.example.secdev.model.Role;
 import com.example.secdev.model.User;
+import com.example.secdev.repo.RolesRepo;
 import com.example.secdev.repo.UserRepo;
 import com.example.secdev.utils.UpdateUserInformation;
 import com.example.secdev.utils.dtos.PasswordDTO;
 import com.example.secdev.utils.dtos.StatusDTO;
 import com.example.secdev.utils.dtos.UserDTO;
+import com.example.secdev.utils.mappers.RoleMapper;
 import com.example.secdev.utils.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,16 +22,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService{
+    private final RolesRepo rolesRepo;
+    private final RoleMapper roleMapper;
+
     private UserRepo userRepo;
     private UserMapper userMapper;
     private CurrentUser currentUser;
+
     private PasswordEncoder passwordEncoder;
     private PasswordBlacklist passwordBlacklist;
 
@@ -92,18 +95,55 @@ public class UserService implements UserDetailsService{
     }
 
     public UserDTO grantRole(UpdateUserInformation userInformation) {
-        return null;
+        String userName = userInformation.getUser();
+        String newRole = userInformation.getRole();
+        return grantRole(userName, newRole);
     }
 
-    public UserDTO removeRole(UpdateUserInformation userInformation) {
-        return null;
+    private UserDTO grantRole(String userName, String newRole) {
+        User user = userRepo.findByEmailIgnoreCase(userName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Role role = rolesRepo.findByName(newRole)
+                .orElse(new Role(null, "New role created, add description", Set.of(user)));
+        user.getRoles().add(role);
+        userRepo.save(user);
+
+        return userMapper.toDTO(user);
+    }
+
+    public UserDTO revokeRole(UpdateUserInformation userInformation) {
+        String userName = userInformation.getUser();
+        String role = userInformation.getRole();
+
+        return revokeRole(userName, role);
+    }
+
+    private UserDTO revokeRole(String userName, String roleToRevoke) {
+        User user  = userRepo.findByEmailIgnoreCase(userName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Role role = rolesRepo.findByName(roleToRevoke)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
+
+        user.getRoles().remove(role);
+        userRepo.save(user);
+
+        return userMapper.toDTO(user);
     }
 
     public void deleteUser(String email) {
+        User user = userRepo.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        userRepo.delete(user);
     }
 
     public List<UserDTO> getUsers() {
-        return null;
+
+
+        return userRepo.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
     }
 }

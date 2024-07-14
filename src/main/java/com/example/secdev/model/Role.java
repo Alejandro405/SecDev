@@ -2,10 +2,7 @@ package com.example.secdev.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.math.BigInteger;
@@ -13,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,4 +26,10 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
+    public Role(String desciption, String name, Set<User> users) {
+        this.description = desciption;
+        this.name = name;
+        this.users = users;
+    }
 }
