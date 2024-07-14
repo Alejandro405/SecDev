@@ -1,0 +1,29 @@
+# Configure the rest bakcend service deploy: two service the app and the database
+
+version: '3.7'
+
+services:
+  db:
+    image: mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: toor
+        MYSQL_DATABASE: emplService_db
+        MYSQL_USER: sammy
+        MYSQL_PASSWORD: czRt4bXlfXwo
+    ports:
+      - "3307:3306"
+    networks:
+      - rest-network
+
+  rest-service:
+    image: sec-dev-app
+    ports:
+        - "28852:8080"
+    depends_on:
+        - db
+    networks:
+        - rest-network
+
+networks:
+  rest-network:
+    driver: bridge
