@@ -1,7 +1,6 @@
 # Configure the rest bakcend service deploy: two service the app and the database
 
 version: '3.7'
-
 services:
   db:
     image: mysql
@@ -10,6 +9,8 @@ services:
         MYSQL_DATABASE: emplService_db
         MYSQL_USER: sammy
         MYSQL_PASSWORD: czRt4bXlfXwo
+    volumes:
+      - mysqlDB:/var/lib/mysql
     ports:
       - "3307:3306"
     networks:
@@ -23,6 +24,9 @@ services:
         - db
     networks:
         - rest-network
+volumes:
+  mysqlDB:
+    external: true
 
 networks:
   rest-network:
