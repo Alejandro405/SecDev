@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class UserMapper {
     public User fromDTO(UserDTO userDTO) {
         return User.builder()
-                .id(userDTO.getId().longValue())
+                .id(userDTO.getId() == null ? null : userDTO.getId().longValue())
                 .name(userDTO.getName())
                 .lastName(userDTO.getLastname())
                 .email(userDTO.getEmail())

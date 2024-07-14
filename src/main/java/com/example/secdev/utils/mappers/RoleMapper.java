@@ -5,6 +5,7 @@ import com.example.secdev.utils.dtos.RoleDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +31,9 @@ public class RoleMapper {
     }
 
     public static Set<Role> fromDTO(Collection<RoleDTO> roleDTOs) {
-        return roleDTOs.stream().map(RoleMapper::fromDTO).collect(Collectors.toSet());
+        if (roleDTOs == null)
+            return new HashSet<>();
+        else
+            return roleDTOs.stream().map(RoleMapper::fromDTO).collect(Collectors.toSet());
     }
 }
